@@ -393,6 +393,21 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
       className={`field-item-horizontal ${field.type}`}
       draggable
       onDragStart={() => handleDragStart(field, from)}
+      onDragOver={(e) => {
+        if (from !== 'unused') {
+          e.preventDefault(); // Allow dropping on field pills in drop zones
+        }
+      }}
+      onDrop={(e) => {
+        if (from !== 'unused') {
+          e.preventDefault();
+          e.stopPropagation();
+          // Find the index of this field and drop after it
+          const config_key = from as keyof typeof config;
+          const currentIndex = config[config_key].findIndex((f: Field) => f.id === field.id);
+          handleDrop(e, from, currentIndex + 1);
+        }
+      }}
       title={field.displayName}
     >
       <span className="field-name">{field.displayName}</span>
@@ -490,6 +505,8 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
                       e.currentTarget.classList.remove('drop-indicator-active');
                     }}
                     onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       e.currentTarget.classList.remove('drop-indicator-active');
                       handleDrop(e, 'filters', index);
                     }}
@@ -507,6 +524,8 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
                   e.currentTarget.classList.remove('drop-indicator-active');
                 }}
                 onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   e.currentTarget.classList.remove('drop-indicator-active');
                   handleDrop(e, 'filters', config.filters.length);
                 }}
@@ -533,6 +552,8 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
                       e.currentTarget.classList.remove('drop-indicator-active');
                     }}
                     onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       e.currentTarget.classList.remove('drop-indicator-active');
                       handleDrop(e, 'columns', index);
                     }}
@@ -550,6 +571,8 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
                   e.currentTarget.classList.remove('drop-indicator-active');
                 }}
                 onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   e.currentTarget.classList.remove('drop-indicator-active');
                   handleDrop(e, 'columns', config.columns.length);
                 }}
@@ -576,6 +599,8 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
                       e.currentTarget.classList.remove('drop-indicator-active');
                     }}
                     onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       e.currentTarget.classList.remove('drop-indicator-active');
                       handleDrop(e, 'rows', index);
                     }}
@@ -593,6 +618,8 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
                   e.currentTarget.classList.remove('drop-indicator-active');
                 }}
                 onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   e.currentTarget.classList.remove('drop-indicator-active');
                   handleDrop(e, 'rows', config.rows.length);
                 }}
@@ -619,6 +646,8 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
                       e.currentTarget.classList.remove('drop-indicator-active');
                     }}
                     onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       e.currentTarget.classList.remove('drop-indicator-active');
                       handleDrop(e, 'values', index);
                     }}
@@ -636,6 +665,8 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
                   e.currentTarget.classList.remove('drop-indicator-active');
                 }}
                 onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   e.currentTarget.classList.remove('drop-indicator-active');
                   handleDrop(e, 'values', config.values.length);
                 }}
