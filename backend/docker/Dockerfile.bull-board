@@ -1,0 +1,54 @@
+# Bull Board Dashboard Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Create a simple Bull Board application
+RUN npm init -y && \
+    npm install @bull-board/express @bull-board/api bullmq ioredis express
+
+# Create the server file
+RUN cat > index.js << 'EOL'
+const express = require("express");
+const { createBullBoard } = require("@bull-board/api");
+const { BullMQAdapter } = require("@bull-board/api/bullMQAdapter");
+const { ExpressAdapter } = require("@bull-board/express");
+const { Queue } = require("bullmq");
+const IORedis = require("ioredis");
+
+const app = express();
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath("/");
+
+const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+const port = process.env.PORT || 3005;
+
+const connection = new IORedis(redisUrl, {
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false
+});
+
+// Create queue instances
+const queues = [
+  new Queue("csv-processing", { connection }),
+  new Queue("data-validation", { connection }),
+  new Queue("analytics", { connection }),
+  new Queue("cleanup", { connection })
+];
+
+// Setup Bull Board
+createBullBoard({
+  queues: queues.map(queue => new BullMQAdapter(queue)),
+  serverAdapter
+});
+
+app.use("/", serverAdapter.getRouter());
+
+app.listen(port, () => {
+  console.log(`Bull Board Dashboard running on port ${port}`);
+});
+EOL
+
+EXPOSE 3005
+
+CMD ["node", "index.js"]

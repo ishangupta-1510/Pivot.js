@@ -1,0 +1,30 @@
+# Backend Dockerfile for Development
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install necessary tools for development
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    postgresql-client \
+    redis
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev)
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p uploads logs
+
+# Expose port
+EXPOSE 3001
+
+# Development command with hot reload
+CMD ["npm", "run", "dev"]

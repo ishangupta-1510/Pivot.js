@@ -1,0 +1,146 @@
+services:
+  # Redis for BullMQ
+  redis:
+    image: redis:7-alpine
+    container_name: pivot-grid-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - pivot-grid-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: pivot-grid-postgres
+    environment:
+      POSTGRES_DB: pivot_grid_dev
+      POSTGRES_USER: pivot_user
+      POSTGRES_PASSWORD: pivot_secure_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+      - ./postgres/postgres.conf:/etc/postgresql/postgresql.conf
+    networks:
+      - pivot-grid-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pivot_user -d pivot_grid_dev"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis Commander (Redis GUI)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: pivot-grid-redis-gui
+    environment:
+      - REDIS_HOSTS=redis:redis:6379
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=admin123
+    ports:
+      - "8081:8081"
+    networks:
+      - pivot-grid-network
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  # pgAdmin (PostgreSQL GUI)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pivot-grid-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pivotgrid.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    networks:
+      - pivot-grid-network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # Backend Service (for development)
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: pivot-grid-backend
+    environment:
+      NODE_ENV: development
+      PORT: "3001"
+      REDIS_URL: redis://redis:6379
+      DATABASE_URL: postgresql://pivot_user:pivot_secure_password@postgres:5432/pivot_grid_dev
+      JWT_SECRET: dev_jwt_secret_change_in_production
+      UPLOAD_DIR: /app/uploads
+      LOG_LEVEL: debug
+      CORS_ORIGIN: http://localhost:3002
+      WEBSOCKET_CORS_ORIGIN: http://localhost:3002
+    ports:
+      - "3001:3001"
+      - "9229:9229" # Debug port
+    volumes:
+      - ../src:/app/src:cached
+      - ../package.json:/app/package.json:cached
+      - ../tsconfig.json:/app/tsconfig.json:cached
+      - backend_uploads:/app/uploads
+      - backend_logs:/app/logs
+    networks:
+      - pivot-grid-network
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # BullMQ Dashboard
+  bull-board:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.bull-board
+    container_name: pivot-grid-bull-board
+    environment:
+      REDIS_URL: redis://redis:6379
+      PORT: 3005
+    ports:
+      - "3005:3005"
+    networks:
+      - pivot-grid-network
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+networks:
+  pivot-grid-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  backend_uploads:
+    driver: local
+  backend_logs:
+    driver: local

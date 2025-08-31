@@ -1,0 +1,27 @@
+{
+  "testStartTime": "2025-08-30T16:07:10.179Z",
+  "fileName": "test-100K-100col.csv",
+  "fileSize": 150671361,
+  "rows": 100000,
+  "columns": 100,
+  "uploadMetrics": {},
+  "processingMetrics": {},
+  "memoryMetrics": {
+    "initial": {
+      "rss": "50.73 MB",
+      "heapTotal": "12.99 MB",
+      "heapUsed": "9.16 MB",
+      "external": "3.60 MB",
+      "systemFree": "735.89 MB",
+      "systemTotal": "7886.23 MB"
+    }
+  },
+  "errors": [
+    {
+      "stage": "upload",
+      "error": "Upload failed: 404 - {\"success\":false,\"error\":\"Endpoint not found\",\"code\":\"NOT_FOUND\",\"path\":\"/api/upload/csv\",\"method\":\"POST\"}",
+      "timestamp": "2025-08-30T16:07:10.618Z"
+    }
+  ],
+  "dataIntegrity": {}
+}

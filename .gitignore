@@ -1,0 +1,103 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+package-lock.json
+
+# testing
+/coverage
+*.test.js
+*.spec.js
+
+# production
+/build
+/dist
+
+# development
+.vscode/
+.idea/
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# storybook
+*storybook.log
+storybook-static
+
+# Claude AI related files
+.claude/
+*.claude
+claude-*
+CLAUDE.md
+
+# Test and debug files
+test-*.js
+test-*.html
+test-*.png
+test-*.csv
+debug-*.js
+debug-*.png
+capture-*.js
+simple-*.js
+*-test.js
+*-debug.js
+
+# Generated test data
+large-dataset-*.csv
+test-dataset-*.csv
+*-test-*.csv
+sample-*.png
+screenshot*.png
+*-screenshot*.png
+*-result.png
+*-demo.png
+
+# Development artifacts
+*.temp
+*.tmp
+.cache/
+.parcel-cache/
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+
+# Environment files
+.env
+.env.local
+.env.production
+backend/.env
+backend/.env.local
+backend/.env.production
+
+# Backend specific
+backend/uploads/
+backend/logs/
+backend/dist/
+backend/node_modules/
+backend/package-lock.json
+
+# Docker volumes
+backend/docker/data/
+
+# Test files
+backend/src/tests/test-files/
+backend/src/tests/test-uploads/

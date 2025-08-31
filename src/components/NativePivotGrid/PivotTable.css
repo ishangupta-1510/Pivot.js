@@ -1,0 +1,475 @@
+/* PivotTable.js Style UI - Original Clean Design */
+
+.pivottable-ui {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+/* Config Area */
+.pivot-config-area {
+  flex: 0 0 auto;
+  padding: 10px;
+  background: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Config Controls */
+.config-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.aggregator-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aggregator-selector label {
+  font-size: 12px;
+  color: #666;
+  display: none; /* Hide label - not shown in original */
+}
+
+.aggregator-selector select {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  background: white;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.add-calculated-field-btn {
+  display: none; /* Not shown in original UI */
+}
+
+/* Formula Builder */
+.formula-builder {
+  display: none; /* Not shown in original UI */
+}
+
+/* Fields Bar */
+.fields-bar {
+  background: white;
+  padding: 6px;
+  margin-bottom: 8px;
+}
+
+.fields-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Field Pills - Original Style */
+.field-item-horizontal {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  font-size: 11px;
+  cursor: move;
+  user-select: none;
+  white-space: nowrap;
+  position: relative;
+}
+
+.field-item-horizontal::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  border-radius: 1px;
+}
+
+/* Field type colors - matching original */
+.field-item-horizontal[title="Id"]::before {
+  background: #6c757d;
+}
+
+.field-item-horizontal[title="Product"]::before {
+  background: #ff9800;
+}
+
+.field-item-horizontal[title="Category"]::before {
+  background: #2196f3;
+}
+
+.field-item-horizontal[title="Region"]::before {
+  background: #9c27b0;
+}
+
+.field-item-horizontal[title="Year"]::before {
+  background: #00bcd4;
+}
+
+.field-item-horizontal[title="Quarter"]::before {
+  background: #ff5722;
+}
+
+.field-item-horizontal[title="Sales"]::before {
+  background: #2196f3;
+}
+
+.field-item-horizontal[title="Profit"]::before {
+  background: #4caf50;
+}
+
+.field-item-horizontal[title="Quantity"]::before {
+  background: #9c27b0;
+}
+
+.field-item-horizontal[title="Cost"]::before {
+  background: #795548;
+}
+
+.field-item-horizontal[title="Discount"]::before {
+  background: #ff9800;
+}
+
+.field-item-horizontal[title="Date"]::before {
+  background: #e91e63;
+}
+
+.field-item-horizontal:hover {
+  background: #e8e8e8;
+}
+
+.field-item-horizontal.dragging {
+  opacity: 0.5;
+}
+
+.field-name {
+  font-weight: normal;
+}
+
+.calculated-badge,
+.remove-field {
+  display: none; /* Not in original UI */
+}
+
+/* Pivot Grid Layout - Original 2x2 layout */
+.pivot-grid-layout {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  flex: 1;
+  background: white;
+  margin: 0;
+  padding: 0;
+}
+
+/* Drop Zones - Original Style */
+.drop-zone-filter {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 80px;
+  background: white;
+  border: 1px solid #ddd;
+  border-style: dotted;
+  border-right: none;
+}
+
+.drop-zone-columns {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 80px;
+  background: white;
+  border: 1px solid #ddd;
+  border-style: dotted;
+}
+
+.drop-zone-rows {
+  grid-column: 1;
+  grid-row: 2;
+  min-height: 400px;
+  background: white;
+  border: 1px solid #ddd;
+  border-style: dotted;
+  border-right: none;
+  border-top: none;
+}
+
+.drop-zone-values {
+  grid-column: 2;
+  grid-row: 2;
+  background: white;
+  border: 1px solid #ddd;
+  border-style: dotted;
+  border-top: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Values section header and content */
+.drop-zone-values .drop-zone-label {
+  flex: 0 0 auto;
+}
+
+.drop-zone-values .field-drop-zone {
+  flex: 0 0 auto;
+  min-height: 60px;
+  border-bottom: 1px dotted #ddd;
+}
+
+/* Pivot table shares the same cell as Values */
+.pivot-table-area {
+  flex: 1;
+  background: white;
+  overflow: auto;
+  padding: 0;
+  margin: 0;
+}
+
+/* Drop Zone Labels - Original Style */
+.drop-zone-label {
+  font-size: 10px;
+  font-weight: normal;
+  text-transform: uppercase;
+  color: #999;
+  padding: 4px 6px;
+  background: transparent;
+  border-bottom: none;
+  letter-spacing: 0.5px;
+}
+
+/* Field Drop Zones */
+.field-drop-zone {
+  min-height: 50px;
+  padding: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  position: relative;
+}
+
+/* Drop position indicators */
+.drop-indicator {
+  width: 2px;
+  height: 20px;
+  background: transparent;
+  transition: all 0.2s;
+  margin: 0 -1px;
+}
+
+.drop-indicator-active {
+  background: #2196f3;
+  width: 4px;
+  margin: 0 2px;
+}
+
+/* Vertical layout for rows */
+.drop-zone-rows .field-drop-zone {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drop-zone-rows .drop-indicator {
+  width: 100%;
+  height: 8px;
+  margin: 0;
+  border-radius: 2px;
+}
+
+.drop-zone-rows .drop-indicator-active {
+  height: 8px;
+  margin: 0;
+}
+
+.field-drop-zone:empty::after {
+  content: attr(data-placeholder);
+  color: #ccc;
+  font-style: italic;
+  font-size: 11px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.drop-zone-filter .field-drop-zone:empty::after {
+  content: "Drop filters here";
+}
+
+.drop-zone-columns .field-drop-zone:empty::after {
+  content: "Drop column fields here";
+}
+
+.drop-zone-rows .field-drop-zone:empty::after {
+  content: "Drop row fields here";
+}
+
+.drop-zone-values .field-drop-zone:empty::after {
+  content: "Drop value fields here";
+}
+
+.field-drop-zone.drag-over {
+  background: #f0f8ff;
+}
+
+/* Dropped Fields - Original Style */
+.drop-zone-filter .field-item-horizontal,
+.drop-zone-columns .field-item-horizontal,
+.drop-zone-rows .field-item-horizontal,
+.drop-zone-values .field-item-horizontal {
+  background: #2196f3;
+  border-color: #1976d2;
+  color: white;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.drop-zone-filter .field-item-horizontal::before,
+.drop-zone-columns .field-item-horizontal::before,
+.drop-zone-rows .field-item-horizontal::before,
+.drop-zone-values .field-item-horizontal::before {
+  display: none; /* Hide color square when dropped */
+}
+
+.drop-zone-filter .field-item-horizontal:hover,
+.drop-zone-columns .field-item-horizontal:hover,
+.drop-zone-rows .field-item-horizontal:hover,
+.drop-zone-values .field-item-horizontal:hover {
+  background: #1976d2;
+}
+
+/* Remove X button for dropped fields */
+.drop-zone-filter .field-item-horizontal::after,
+.drop-zone-columns .field-item-horizontal::after,
+.drop-zone-rows .field-item-horizontal::after,
+.drop-zone-values .field-item-horizontal::after {
+  content: ' ×';
+  margin-left: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Pivot Table - Original Style */
+.pivot-table-simple {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 0;
+}
+
+.pivot-table-simple th,
+.pivot-table-simple td {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.pivot-table-simple th {
+  background: #f5f5f5;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.pivot-table-simple td {
+  background: white;
+}
+
+.pivot-table-simple tr:hover td {
+  background: #f9f9f9;
+}
+
+.row-header-label {
+  background: #e8e8e8;
+  font-weight: bold;
+  text-align: center;
+  border-right: 2px solid #ccc;
+}
+
+.column-header {
+  background: #e8e8e8;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.row-header {
+  background: #fafafa;
+  font-weight: 600;
+  border-right: 1px solid #ddd;
+}
+
+.data-cell {
+  text-align: right;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.grand-total {
+  background: #e0e0e0 !important;
+  font-weight: bold;
+}
+
+.grand-total-row {
+  border-top: 2px solid #999;
+}
+
+.grand-total-row td {
+  background: #e0e0e0;
+  font-weight: bold;
+}
+
+/* Empty State */
+.pivot-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  color: #999;
+  font-size: 13px;
+  text-align: center;
+  font-style: italic;
+}
+
+.pivot-empty-state p {
+  margin: 0;
+}
+
+/* Info text below drop zones */
+.field-drop-zone::before {
+  content: '';
+}
+
+.drop-zone-columns .field-drop-zone::after,
+.drop-zone-values .field-drop-zone::after {
+  white-space: nowrap;
+}
+
+/* Auto text */
+.drop-zone-rows::after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  color: #999;
+  padding: 2px 6px;
+  text-align: center;
+}
+
+/* Helper text */
+.helper-text {
+  font-size: 10px;
+  color: #999;
+  font-style: italic;
+  margin: 2px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pivot-grid-layout {
+    grid-template-columns: 80px 80px 1fr;
+  }
+}
