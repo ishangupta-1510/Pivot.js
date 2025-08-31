@@ -387,44 +387,64 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
   };
 
   // Render field pill
-  const renderFieldPill = (field: Field, from: string) => (
-    <div
-      key={field.id}
-      className={`field-item-horizontal ${field.type}`}
-      draggable
-      onDragStart={() => handleDragStart(field, from)}
-      onDragOver={(e) => {
-        if (from !== 'unused') {
-          e.preventDefault(); // Allow dropping on field pills in drop zones
-        }
-      }}
-      onDrop={(e) => {
-        if (from !== 'unused') {
-          e.preventDefault();
-          e.stopPropagation();
-          // Find the index of this field and drop after it
-          const config_key = from as keyof typeof config;
-          const currentIndex = config[config_key].findIndex((f: Field) => f.id === field.id);
-          handleDrop(e, from, currentIndex + 1);
-        }
-      }}
-      title={field.displayName}
-    >
-      <span className="field-name">{field.displayName}</span>
-      {(field as any).isCalculated && (
-        <>
+  const renderFieldPill = (field: Field, from: string) => {
+    const removeField = () => {
+      if ((field as any).isCalculated) {
+        removeCalculatedField(field.id);
+      } else if (from !== 'unused') {
+        // Remove field from drop zone
+        setConfig(prev => ({
+          ...prev,
+          [from]: prev[from as keyof typeof prev].filter((f: Field) => f.id !== field.id)
+        }));
+      }
+    };
+
+    return (
+      <div
+        key={field.id}
+        className={`field-item-horizontal ${field.type}`}
+        draggable
+        onDragStart={() => handleDragStart(field, from)}
+        onDragOver={(e) => {
+          if (from !== 'unused') {
+            e.preventDefault(); // Allow dropping on field pills in drop zones
+          }
+        }}
+        onDrop={(e) => {
+          if (from !== 'unused') {
+            e.preventDefault();
+            e.stopPropagation();
+            // Find the index of this field and drop after it
+            const config_key = from as keyof typeof config;
+            const currentIndex = config[config_key].findIndex((f: Field) => f.id === field.id);
+            handleDrop(e, from, currentIndex + 1);
+          }
+        }}
+        onClick={(e) => {
+          // Handle click on the X button (::after pseudo-element)
+          if (from !== 'unused') {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const elementWidth = rect.width;
+            
+            // Check if click is in the right area where X button would be
+            if (clickX > elementWidth - 20) {
+              e.preventDefault();
+              e.stopPropagation();
+              removeField();
+            }
+          }
+        }}
+        title={field.displayName}
+      >
+        <span className="field-name">{field.displayName}</span>
+        {(field as any).isCalculated && (
           <span className="calculated-badge">ƒ</span>
-          <button
-            className="remove-field"
-            onClick={() => removeCalculatedField(field.id)}
-            title="Remove calculated field"
-          >
-            ×
-          </button>
-        </>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="pivottable-ui" style={{ height, width }}>
@@ -587,43 +607,7 @@ const PivotTableUI: React.FC<PivotTableUIProps> = ({
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, 'rows')}
             >
-              {config.rows.map((field, index) => (
-                <React.Fragment key={field.id}>
-                  <div
-                    className="drop-indicator"
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.add('drop-indicator-active');
-                    }}
-                    onDragLeave={(e) => {
-                      e.currentTarget.classList.remove('drop-indicator-active');
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      e.currentTarget.classList.remove('drop-indicator-active');
-                      handleDrop(e, 'rows', index);
-                    }}
-                  />
-                  {renderFieldPill(field, 'rows')}
-                </React.Fragment>
-              ))}
-              <div
-                className="drop-indicator"
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.currentTarget.classList.add('drop-indicator-active');
-                }}
-                onDragLeave={(e) => {
-                  e.currentTarget.classList.remove('drop-indicator-active');
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.currentTarget.classList.remove('drop-indicator-active');
-                  handleDrop(e, 'rows', config.rows.length);
-                }}
-              />
+              {config.rows.map(field => renderFieldPill(field, 'rows'))}
             </div>
           </div>
 
